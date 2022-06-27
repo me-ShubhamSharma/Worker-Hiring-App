@@ -2,7 +2,6 @@ package com.example.myproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -27,8 +26,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText firstName, lastName, email, address, password, phoneno;
     Button register, login;
     ProgressBar progressBar;
-
-    int flag=1;
 
     FirebaseAuth mAuth;
     Task<Void> dataBase;
@@ -59,9 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(flag==1){
-                    insertData();
-                }
+                insertData();
             }
         });
         login.setOnClickListener(new View.OnClickListener(){
@@ -79,6 +74,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.register:
                 insertData();
                 break;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+            startActivity(new Intent( MainActivity.this, HomeScreen.class));
+            finish();
         }
     }
 
@@ -166,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 progressBar.setVisibility(View.VISIBLE);
                                 Toast.makeText(MainActivity.this, "Registered!!",Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
+
+                                startActivity(new Intent(MainActivity.this, HomeScreen.class));
                             }else {
                                 Toast.makeText(MainActivity.this, "Not Registered!!",Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
@@ -178,5 +184,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+
+
     }
 }
