@@ -2,6 +2,8 @@ package com.example.myproject;
 
 //import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,11 +20,16 @@ public class HomeScreen extends AppCompatActivity {
     SettingFragment settingFragment = new SettingFragment();
     JobFragment jobFragment = new JobFragment();
 
+    RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity1_main);
+
+        recyclerView = findViewById(R.id.rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 

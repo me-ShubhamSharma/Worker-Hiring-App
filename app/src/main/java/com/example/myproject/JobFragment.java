@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +27,7 @@ public class JobFragment extends Fragment {
 
 
     EditText workname, workemail, phone, worksalary, workloc, workdesc,workreq,workstartdate;
-    Button postbtn;
+    Button post;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference database;
@@ -44,27 +46,27 @@ public class JobFragment extends Fragment {
         workdesc = view.findViewById(R.id.workdesc);
         workreq = view.findViewById(R.id.workreq);
         workstartdate = view.findViewById(R.id.workstartdate);
-        postbtn = view.findViewById(R.id.post);
+        post = view.findViewById(R.id.post);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         database = firebaseDatabase.getReference("Work Details");
 
-        postbtn.setOnClickListener(new View.OnClickListener() {
+        post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 insertData();
+//                Toast.makeText(getContext(), "Loop", Toast.LENGTH_SHORT).show();
 //                startActivity(new Intent(getContext(), HomeScreen.class));
             }
         });
 
         return view;
     }
-
     public void insertData() {
 
 
-        Toast.makeText(getContext(), "Working!!", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "Working!!", Toast.LENGTH_SHORT).show();
 
 
         String wname = workname.getText().toString().trim();
@@ -131,18 +133,34 @@ public class JobFragment extends Fragment {
         }
 
         WorkDetails workDetails = new WorkDetails(wname, wemail,wdesc,wreq, wphone, wsalary, wstartdate, wloc );
-
-        database.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                database.setValue(workDetails);
-                Toast.makeText(getContext(), "Data added", Toast.LENGTH_SHORT).show();
-            }
 //
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Fail to add data " + error, Toast.LENGTH_SHORT).show();
-            }
-        });
+//        database.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                database.setValue(workDetails);
+//                Toast.makeText(getContext(), "Data added", Toast.LENGTH_SHORT).show();
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(getContext(), "Fail to add data " + error, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+
+        FirebaseDatabase.getInstance().getReference().child("Work Details").push()
+                .setValue(workDetails)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getContext(), "Posted!!", Toast.LENGTH_LONG).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+//        Toast.makeText(getContext(), "Loop", Toast.LENGTH_SHORT).show();
     }
 }
